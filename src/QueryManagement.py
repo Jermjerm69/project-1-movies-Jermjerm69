@@ -72,3 +72,26 @@ class QueryManager:
             print(f"processing: YEAR_AND_GENRE {title_type} {year} {genres}\nNo match found!")
         elapsed = timer() - start
         print(f"elapsed time:{elapsed}")
+
+    def runtime(self,title_type,start_time,end_time):
+        """Find all movies of a certain type that are within a range of runtimes.
+             :param filename:,title_type,start_time,end_time
+             prints movies results
+        """
+        start = timer()
+        movies_results = []
+        for movie in self.movies:
+            if movie.titleType == title_type and movie.runtimeMinutes >= start_time and movie.runtimeMinutes <= end_time:
+                movies_results.append(movie)
+
+        if movies_results:
+            movies_results.sort(key=operator.attrgetter('primaryTitle'))
+            movies_results.sort(key=operator.attrgetter('runtimeMinutes'),reverse=True)
+
+            print(f"\nprocessing: RUNTIME {title_type} {start_time} {end_time}")
+            for movie in movies_results:
+                print(f"\tIdentifier: {movie.tconst}, Title: {movie.primaryTitle}, Type: {movie.titleType}, Year: {movie.startYear},Runtime: {movie.runtimeMinutes}, Genres: {movie.genres}")
+        else:
+            print(f"processing: RUNTIME {title_type} {start_time} {end_time}\nNo match found!")
+        elapsed = timer() - start
+        print(f"elapsed time:{elapsed}")
