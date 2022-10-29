@@ -95,3 +95,29 @@ class QueryManager:
             print(f"processing: RUNTIME {title_type} {start_time} {end_time}\nNo match found!")
         elapsed = timer() - start
         print(f"elapsed time:{elapsed}")
+
+    def most_votes(self,title_type,num):
+        """Find the given number of movies of a certain type with the most votes
+         :param filename:,title_type,number of movies
+         prints movies results """
+        start = timer()
+        movies_results = []
+        movies_specified_title = []
+        for movie in self.movies:
+            if movie.titleType == title_type:
+                for rating in self.ratings:
+                    if rating.tconst == movie.tconst:
+                        movie_dict=movie.__dict__
+                        movie_dict["numVotes"]=rating.numVotes
+                        movies_specified_title.append(movie_dict)
+        if movies_specified_title:
+            sorted_movies=sorted(movies_specified_title,key=lambda x:x['primaryTitle'])[:int(num)]
+            sorted_movies=sorted(sorted_movies,key=lambda x:(int(x['numVotes'])),reverse=True)
+            print(f"\nprocessing: MOST_VOTES {title_type} {num}")
+            for index,movie in enumerate(sorted_movies,start=1):
+                print(
+                    f"\t{index}. VOTES: {movie['numVotes']}, MOVIE: Identifier: {movie['tconst']}, Title: {movie['primaryTitle']}, Type: {movie['titleType']}, Year: {movie['startYear']},Runtime: {movie['runtimeMinutes']}, Genres: {movie['genres']}")
+        else:
+            print(f"processing: MOST_VOTES {title_type} {num}\nNo match found!")
+        elapsed = timer() - start
+        print(f"elapsed time:{elapsed}")
