@@ -48,3 +48,27 @@ class QueryManager:
             print(f"processing: CONTAINS {title_type} {words}\nNo match found!")
         elapsed = timer() - start
         print(f"elapsed time:{elapsed}")
+
+    def year_genre(self,title_type,year,genres):
+        """: : Find all movies of a certain type from a particular year that match a genre.
+         :param filename: title_type,year,genres
+         prints movies results
+                 """
+
+        start = timer()
+        movies_results=[]
+        for movie in self.movies:
+            if movie.titleType == title_type and movie.startYear==year and movie.genres==genres:
+                movies_results.append(movie)
+
+        if movies_results:
+            movies_results.sort(key=operator.attrgetter('primaryTitle'))
+
+            print(f"processing: YEAR_AND_GENRE {title_type} {year} {genres}")
+            for movie in movies_results:
+                print(
+                f"Identifier: {movie.tconst}, Title: {movie.primaryTitle}, Type: {movie.titleType}, Year: {movie.startYear},Runtime: {movie.runtimeMinutes}, Genres: {movie.genres}")
+        else:
+            print(f"processing: YEAR_AND_GENRE {title_type} {year} {genres}\nNo match found!")
+        elapsed = timer() - start
+        print(f"elapsed time:{elapsed}")
