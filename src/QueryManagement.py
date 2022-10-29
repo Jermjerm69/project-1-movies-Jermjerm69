@@ -121,3 +121,38 @@ class QueryManager:
             print(f"processing: MOST_VOTES {title_type} {num}\nNo match found!")
         elapsed = timer() - start
         print(f"elapsed time:{elapsed}")
+
+
+    def top(self,title_type,num,start_year,end_year):
+        """Find the number of movies of a certain type by a range of years (inclusive) that are the highest rated and have at
+           least 1000 votes.
+           :param title_type,num,start_year,end_year
+           prints results"""
+        start = timer()
+        movies_specified = []
+
+        for movie in self.movies:
+            if movie.titleType == title_type and movie.startYear>=start_year and movie.endYear<=end_year:
+                for rating in self.ratings:
+                    if rating.tconst == movie.tconst and int(rating.numVotes)>=1000:
+                        movie_dict = movie.__dict__
+                        movie_dict["numVotes"] = rating.numVotes
+                        movie_dict["rating"] = rating.averageRating
+                        movies_specified.append(movie_dict)
+
+        if movies_specified:
+            sorted_by_year = sorted(movies_specified, key=lambda x: (int(x['startYear'])))
+            print(f"\nprocessing: TOP {title_type} {num} {start_year} {end_year}")
+            for year in range(int(start_year),int(end_year)+1):
+                filtered_by_year_wise=filter(lambda x:int(x['startYear'])==int(year),list(sorted_by_year))
+                if filtered_by_year_wise:
+                    sorted_movies = sorted(movies_specified, key=lambda x: (float((x['numVotes']))),reverse=True)[:int(num)]
+                    sorted_movies = sorted(sorted_movies, key=lambda x: (float(x['rating'])),reverse=True)
+                    print(f"\tYEAR: {year}")
+                    for index, movie in enumerate(sorted_movies, start=1):
+                        print(
+                            f"\t\t{index}. RATING: {movie['rating']}, VOTES: {movie['numVotes']}, MOVIE: Identifier: {movie['tconst']}, Title: {movie['primaryTitle']}, Type: {movie['titleType']}, Year: {movie['startYear']},Runtime: {movie['runtimeMinutes']}, Genres: {movie['genres']}")
+        else:
+            print(f"processing: MOST_VOTES {title_type} {num}\nNo match found!")
+        elapsed = timer() - start
+        print(f"elapsed time:{elapsed}")
